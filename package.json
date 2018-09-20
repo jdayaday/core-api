@@ -1,0 +1,19 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Core APIs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "API"
+  ],
+  "author": "Jonathan Dayaday",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^2.0.1",
+    "express": "^4.16.3",
+    "morgan": "^1.9.1"
+  }
+}

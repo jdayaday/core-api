@@ -1,0 +1,6 @@
+{
+	"name": "Core Services API - Production",
+	"servers": {
+		"database": "db-prod"
+	}
+}
