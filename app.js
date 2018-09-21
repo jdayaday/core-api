@@ -1,6 +1,6 @@
 // Required Modules
-const debug = require('debug')('app:startup');
-const config = require('config');
+const debug = require('debug')('app:startup'); // set DEBUG environment variable
+const config = require('config');              // set NODE_ENV environment variable
 const morgan = require('morgan');
 const helmet = require('helmet');
 const express = require('express');
@@ -20,6 +20,7 @@ if (app.get('env') === 'development') {
 	debug('HTTP requests logging enabled.');
 }
 
+// Set Express middleware
 // Secure the app by setting various HTTP headers
 app.use(helmet());
 
