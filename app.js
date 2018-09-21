@@ -1,6 +1,8 @@
 // Required Modules
+const debug = require('debug')('app:startup');
 const config = require('config');
 const morgan = require('morgan');
+const helmet = require('helmet');
 const express = require('express');
 
 const app = express();
@@ -15,8 +17,11 @@ console.log(`App Environment: ${app.get('env')}`);
 if (app.get('env') === 'development') {
 	// Enable HTTP request logging
 	app.use(morgan('tiny'));
-	console.log('HTTP requests logging enabled.');
+	debug('HTTP requests logging enabled.');
 }
+
+// Secure the app by setting various HTTP headers
+app.use(helmet());
 
 // Listen for API requests
 const port = process.env.PORT || 3000;
