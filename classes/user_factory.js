@@ -1,4 +1,4 @@
-// Requiered modules
+// Required modules
 const mongoose = require('mongoose');
 
 // Model & Schema
