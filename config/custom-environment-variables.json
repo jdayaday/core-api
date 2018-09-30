@@ -1,5 +1,6 @@
 {
 	"servers": {
+		"username": "db_user",
 		"password": "db_password"
 	}
 }

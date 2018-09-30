@@ -1,6 +1,7 @@
 {
 	"name": "Core Services API - Development",
 	"servers": {
-		"database": "db-dev"
+		"host": "cluster-triomm3-yoafa.mongodb.net",
+		"database": "triomm3"
 	}
 }
