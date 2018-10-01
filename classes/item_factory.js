@@ -63,7 +63,8 @@ class ItemFactory {
             uom: uom,
             order_uom: order_uom,
             uom_conversion: uom_conversion,
-            unit_cost: unit_cost
+            unit_cost: unit_cost,
+            updated: Date.now()
         });
         item = item.save();
         return item;
@@ -76,7 +77,8 @@ class ItemFactory {
             uom: uom,
             order_uom: order_uom,
             uom_conversion: uom_conversion,
-            unit_cost: unit_cost
+            unit_cost: unit_cost,
+            updated: Date.now()
         },
         {new: true});
         return item;

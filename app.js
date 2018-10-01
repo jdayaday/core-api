@@ -21,9 +21,10 @@ info_log.log = console.log.bind(console);	// log via console
 debug_log.log = console.info.bind(console);	// log to info
 
 // Check for application environment and enable necessary express middleware
-warning_log('testing error');
 info_log(`App Environment: ${app.get('env')}`);
 if (app.get('env') === 'development') {
+	warning_log('Warning! This is still in development...');
+
 	// Enable HTTP request logging
 	app.use(morgan('tiny'));
 	debug_log('HTTP requests logging enabled.');

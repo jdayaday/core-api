@@ -74,7 +74,8 @@ class UserFactory {
             lastname: lastname,
             address: address,
             phone: phone,
-            email: email
+            email: email,
+            updated: Date.now()
         });
         user = user.save();
         return user;
@@ -88,7 +89,8 @@ class UserFactory {
             lastname: lastname,
             address: address,
             phone: phone,
-            email: email
+            email: email,
+            updated: Date.now()
         }, 
         {new: true});
         return user;
