@@ -18,7 +18,15 @@ router.post('/', async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userfactory.addUser(req.body.name);
+    const user = await userfactory.addUser(
+        req.body.username,
+        req.body.password,
+        req.body.firstname,
+        req.body.lastname,
+        req.body.address,
+        req.body.phone,
+        req.body.email
+    );
     
     res.send(user);
 });
@@ -28,7 +36,16 @@ router.put('/:id', async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userfactory.updateUser(req.params.id, req.body.name);
+    const user = await userfactory.updateUser(
+        req.params.id, 
+        req.body.username,
+        req.body.password,
+        req.body.firstname,
+        req.body.lastname,
+        req.body.address,
+        req.body.phone,
+        req.body.email
+    );
 
     if (!user) return res.status(404).send('The user with the given ID was not found.');
   
@@ -56,7 +73,18 @@ router.get('/:id', async (req, res) => {
 // Validate user input
 function validateUser(user) {
     const schema = {
-      name: Joi.string().min(3).required()
+        username: Joi.string().min(1).max(50).required(),
+        password: Joi.string().min(1).max(50).required(),
+        firstname: Joi.string().min(1).max(50).required(),
+        lastname: Joi.string().min(1).max(50).required(),
+        address: {
+            street: Joi.string().required(),
+            city: Joi.string().required(),
+            province: Joi.string().required(),
+            zip: Joi.number().required(),
+        },
+        phone: Joi.string().min(1).max(13).required(),
+        email: Joi.string().min(1).max(100).required()
     };
   
     return Joi.validate(user, schema);
