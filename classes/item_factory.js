@@ -41,6 +41,7 @@ const Item = mongoose.model('Item', mongoose.Schema({
     }
 }));
 
+// Class
 class ItemFactory {
     constructor() {
         

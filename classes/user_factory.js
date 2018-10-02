@@ -51,6 +51,7 @@ const User = mongoose.model('User', mongoose.Schema({
     }
 }));
 
+// Class
 class UserFactory {
     constructor() {
         
