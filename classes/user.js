@@ -103,4 +103,7 @@ class UserFactory {
     }
 }
 
-module.exports = UserFactory;
+module.exports = {
+    Factory: UserFactory,
+    Model: User
+};

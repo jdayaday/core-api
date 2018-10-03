@@ -91,4 +91,7 @@ class ItemFactory {
     }
 }
 
-module.exports = ItemFactory;
+module.exports = {
+    Factory: ItemFactory,
+    Model: Item
+}

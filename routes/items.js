@@ -4,8 +4,8 @@ const Joi = require('joi');             // Input validation
 const router = express.Router();
 
 // Classes
-const Factory = require('../classes/item_factory');
-const itemfactory = new Factory();
+const Item = require('../classes/item');
+const itemfactory = new Item.Factory();
 
 // Return all items
 router.get('/', async (req, res) => {

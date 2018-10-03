@@ -11,6 +11,26 @@ const Order = mongoose.model('Order', mongoose.Schema({
         type: String,
         required: true
     },
+    order_items: [{
+        item: {
+            type: Schema.Types.ObjectId,
+            ref: 'Item'
+        },
+        quantity: {
+            type: Number,
+            default: 1
+        }
+    }],
+    ordered_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'commit'],
+        default: 'pending',
+        required: true
+    },
     order_date: {
         type: Date,
         default: Date.now
@@ -24,6 +44,10 @@ const Order = mongoose.model('Order', mongoose.Schema({
 // Class
 class OrderFactory {
     constructor() {
+
+    }
+
+    getOrders(user) {
 
     }
 }
