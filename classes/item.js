@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // Model & Schema
-const Item = mongoose.model('Item', mongoose.Schema({
+const ItemModel = mongoose.model('Item', mongoose.Schema({
     itemcode: {
         type: String,
         required: true,
@@ -42,23 +42,23 @@ const Item = mongoose.model('Item', mongoose.Schema({
 }));
 
 // Class
-class ItemFactory {
+class Item {
     constructor() {
         
     }
 
     getItems() {
-        const items = Item.find().sort('itemcode');
+        const items = ItemModel.find().sort('itemcode');
         return items;
     }
 
     getItem(id) {
-        const item = Item.findById(id);
+        const item = ItemModel.findById(id);
         return item;
     }
 
     addItem(itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
-        let item = new Item({
+        let item = new ItemModel({
             itemcode: itemcode,
             description: description,
             uom: uom,
@@ -72,7 +72,7 @@ class ItemFactory {
     }
 
     updateItem(id, itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
-        const item = Item.findByIdAndUpdate(id, {
+        const item = ItemModel.findByIdAndUpdate(id, {
             itemcode: itemcode,
             description: description,
             uom: uom,
@@ -86,12 +86,12 @@ class ItemFactory {
     }
 
     deleteItem(id) {
-        const item = Item.findByIdAndRemove(id);
+        const item = ItemModel.findByIdAndRemove(id);
         return item;
     }
 }
 
 module.exports = {
-    Factory: ItemFactory,
-    Model: Item
+    Class: Item,
+    Model: ItemModel
 }

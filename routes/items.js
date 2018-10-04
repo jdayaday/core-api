@@ -5,11 +5,11 @@ const router = express.Router();
 
 // Classes
 const Item = require('../classes/item');
-const itemfactory = new Item.Factory();
+const itemObject = new Item.Class();
 
 // Return all items
 router.get('/', async (req, res) => {
-    const items = await itemfactory.getItems();
+    const items = await itemObject.getItems();
     res.send(items);
 });
 
@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
     const { error } = validateItem(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const item = await itemfactory.addItem(
+    const item = await itemObject.addItem(
         req.body.itemcode,
         req.body.description,
         req.body.uom,
@@ -35,7 +35,7 @@ router.put('/:id', async (req, res) => {
     const { error } = validateItem(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const item = await itemfactory.updateItem(
+    const item = await itemObject.updateItem(
         req.params.id,
         req.body.itemcode,
         req.body.description,
@@ -52,7 +52,7 @@ router.put('/:id', async (req, res) => {
 
 // Delete item
 router.delete('/:id', async (req, res) => {
-    const item = await itemfactory.deleteItem(req.params.id);
+    const item = await itemObject.deleteItem(req.params.id);
 
     if (!item) return res.status(404).send('The item with the given ID was not found.');
   
@@ -61,7 +61,7 @@ router.delete('/:id', async (req, res) => {
 
 // Return specified item
 router.get('/:id', async (req, res) => {
-    const item = await itemfactory.getItem(req.params.id);
+    const item = await itemObject.getItem(req.params.id);
 
     if (!item) return res.status(404).send('The item with the given ID was not found.');
 

@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // Model & Schema
-const User = mongoose.model('User', mongoose.Schema({
+const UserModel = mongoose.model('User', mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -52,23 +52,23 @@ const User = mongoose.model('User', mongoose.Schema({
 }));
 
 // Class
-class UserFactory {
+class User {
     constructor() {
         
     }
 
     getUsers() {
-        const users = User.find().sort('username');
+        const users = UserModel.find().sort('username');
         return users;
     }
 
     getUser(id) {
-        const user = User.findById(id);
+        const user = UserModel.findById(id);
         return user;
     }
 
     addUser(username, password, firstname, lastname, address, phone, email) {
-        let user = new User({
+        let user = new UserModel({
             username: username,
             password: password,
             firstname: firstname,
@@ -83,7 +83,7 @@ class UserFactory {
     }
 
     updateUser(id, username, password, firstname, lastname, address, phone, email) {
-        const user = User.findByIdAndUpdate(id, {
+        const user = UserModel.findByIdAndUpdate(id, {
             username: username,
             password: password,
             firstname: firstname,
@@ -98,12 +98,12 @@ class UserFactory {
     }
 
     deleteUser(id) {
-        const user = User.findByIdAndRemove(id);
+        const user = UserModel.findByIdAndRemove(id);
         return user;
     }
 }
 
 module.exports = {
-    Factory: UserFactory,
-    Model: User
+    Class: User,
+    Model: UserModel
 };

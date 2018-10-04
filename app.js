@@ -12,6 +12,7 @@ const express = require('express');					// Express
 // Routers
 const users = require('./routes/users');			// Users router
 const items = require('./routes/items');			// Items router
+const orders = require('./routes/orders');			// Orders router
 
 // Express
 const app = express();
@@ -52,10 +53,11 @@ mongoose.connect(uri, { useNewUrlParser: true })
 	.catch(err => error_log('Could not connect to MongoDB...' + err));
 
 // Set Express middleware functions
-app.use(express.json());				// Parse incoming JSON payloads
-app.use(helmet());						// Secure the app by setting various HTTP headers
-app.use('/api/users', users);			// Route requests to users
-app.use('/api/inventory/items', items);	// Route requests to items
+app.use(express.json());					// Parse incoming JSON payloads
+app.use(helmet());							// Secure the app by setting various HTTP headers
+app.use('/api/users', users);				// Route requests to users
+app.use('/api/inventory/items', items);		// Route requests to items
+app.use('/api/inventory/orders', orders);	// Route requests to orders
 
 // Listen for API requests
 const port = process.env.PORT || 3000;

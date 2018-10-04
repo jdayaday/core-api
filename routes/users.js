@@ -5,11 +5,11 @@ const router = express.Router();
 
 // Classes
 const User = require('../classes/user');
-const userfactory = new User.Factory();
+const userObject = new User.Class();
 
 // Return all users
 router.get('/', async (req, res) => {
-    const users = await userfactory.getUsers();
+    const users = await userObject.getUsers();
     res.send(users);
 });
 
@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userfactory.addUser(
+    const user = await userObject.addUser(
         req.body.username,
         req.body.password,
         req.body.firstname,
@@ -36,7 +36,7 @@ router.put('/:id', async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userfactory.updateUser(
+    const user = await userObject.updateUser(
         req.params.id, 
         req.body.username,
         req.body.password,
@@ -54,7 +54,7 @@ router.put('/:id', async (req, res) => {
 
 // Delete user
 router.delete('/:id', async (req, res) => {
-    const user = await userfactory.deleteUser(req.params.id);
+    const user = await userObject.deleteUser(req.params.id);
 
     if (!user) return res.status(404).send('The user with the given ID was not found.');
   
@@ -63,7 +63,7 @@ router.delete('/:id', async (req, res) => {
 
 // Return specified user
 router.get('/:id', async (req, res) => {
-    const user = await userfactory.getUser(req.params.id);
+    const user = await userObject.getUser(req.params.id);
 
     if (!user) return res.status(404).send('The user with the given ID was not found.');
 

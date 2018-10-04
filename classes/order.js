@@ -5,7 +5,7 @@ const User = require('./user');
 const userModel = User.Model;
 
 // Model & Schema
-const Order = mongoose.model('Order', mongoose.Schema({
+const OrderModel = mongoose.model('Order', mongoose.Schema({
     invoice_no: {
         type: String,
         required: true
@@ -16,7 +16,7 @@ const Order = mongoose.model('Order', mongoose.Schema({
     },
     order_items: [{
         item: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Item'
         },
         quantity: {
@@ -25,7 +25,7 @@ const Order = mongoose.model('Order', mongoose.Schema({
         }
     }],
     ordered_by: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'User'
     },
     status: {
@@ -45,41 +45,61 @@ const Order = mongoose.model('Order', mongoose.Schema({
 }));
 
 // Class
-class OrderFactory {
+class Order {
     constructor() {
 
     }
 
     getOrders(userId) {
         // Get orders made by specific user
-        const user = userModel.findById(userId);
-        const orders = Order.find({
-            ordered_by: user._id
-        }).sort('order_date');
+        const orders = OrderModel.find({
+            ordered_by: userId
+        }).sort('order_date')
+        .populate('item');
+
+        return orders;
     }
 
-    createOrder(invoice_no, po_no, order_items, ordered_by, status, order_date) {
-        let order = new Order({
+    getOrder(id) {
+        const order = OrderModel.findById(id);
+        return order;
+    }
+
+    createOrder(invoice_no, po_no, order_items, ordered_by, status) {
+        let order = new OrderModel({
             invoice_no: invoice_no,
             po_no: po_no,
             order_items: order_items,
             ordered_by: ordered_by,
             status: status,
-            order_date: order_date,
+            order_date: Date.now(),
             updated: Date.now()
         });
-        order
+        order = order.save();
+        return order;
     }
 
-    updateOrder() {
-
+    // Update order or set order status to 'commit', 'canceled', or 'fulfilled'
+    updateOrder(id, invoice_no, po_no, order_items, ordered_by, status) {
+        const order = OrderModel.findByIdAndUpdate(id, {
+            invoice_no: invoice_no,
+            po_no: po_no,
+            order_items: order_items,
+            ordered_by: ordered_by,
+            status: status,
+            updated: Date.now()
+        },
+        {new: true});
+        return order;
     }
 
-    cancelOrder() {
-
+    deleteOrder(id) {
+        const order = OrderModel.findByIdAndRemove(id);
+        return order;
     }
+}
 
-    deleteOrder() {
-
-    }
+module.exports = {
+    Class: Order,
+    Model: OrderModel
 }
