@@ -60,5 +60,5 @@ app.use('/api/inventory/items', items);		// Route requests to items
 app.use('/api/inventory/orders', orders);	// Route requests to orders
 
 // Listen for API requests
-const port = process.env.PORT || 3000;
+const port = process.env.API_PORT || 3000;
 app.listen(port, () => info_log(`Listening on port ${port}...`));
