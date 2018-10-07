@@ -50,12 +50,11 @@ class Order {
 
     }
 
-    getOrders(userId) {
+    getOrders(query) {
         // Get orders made by specific user
-        const orders = OrderModel.find({
-            ordered_by: userId
-        }).sort('order_date')
-        .populate('item');
+        const orders = OrderModel.find(query)
+        .populate('order_items.item')
+        .sort('order_date');
 
         return orders;
     }
@@ -69,13 +68,14 @@ class Order {
         let order = new OrderModel({
             invoice_no: invoice_no,
             po_no: po_no,
-            order_items: order_items,
+            order_items: this.consolidate(order_items),
             ordered_by: ordered_by,
             status: status,
             order_date: Date.now(),
             updated: Date.now()
         });
         order = order.save();
+
         return order;
     }
 
@@ -84,18 +84,45 @@ class Order {
         const order = OrderModel.findByIdAndUpdate(id, {
             invoice_no: invoice_no,
             po_no: po_no,
-            order_items: order_items,
+            order_items: this.consolidate(order_items),
             ordered_by: ordered_by,
             status: status,
             updated: Date.now()
         },
         {new: true});
+
         return order;
     }
 
     deleteOrder(id) {
         const order = OrderModel.findByIdAndRemove(id);
         return order;
+    }
+
+    // Helper methods
+    consolidate(orders) {
+        var consolidated = [];
+        var order_keys = Object.keys(orders);
+        order_keys.forEach(order_key => {
+            var order = orders[order_key];
+            var consolidated_keys = Object.keys(consolidated);
+            if(consolidated_keys.length != 0) { // Check if list is empty
+                let found = false;
+                consolidated_keys.forEach(consolidated_key => {
+                    var consolidated_item = consolidated[consolidated_key];
+                    if(order.item === consolidated_item.item) {
+                        consolidated_item.quantity += order.quantity;
+                        found = true;
+                    }
+                });
+                if(!found) { // Found matching order
+                    consolidated.push(order);
+                }
+            } else { // Empty list
+                consolidated.push(order);
+            }
+        });
+        return consolidated;
     }
 }
 

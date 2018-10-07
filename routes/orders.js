@@ -9,7 +9,7 @@ const orderObject = new Order.Class();
 
 // Return all user orders
 router.get('/', async (req, res) => {
-    const orders = await orderObject.getOrders(req.query.userid);
+    const orders = await orderObject.getOrders(req.query);
     res.send(orders);
 });
 
@@ -71,10 +71,10 @@ function validateOrder(order) {
     const schema = {
         invoice_no: Joi.string().min(1).required(),
         po_no: Joi.string().min(1).required(),
-        order_items: {
+        order_items: Joi.array().items({
             item: Joi.string().required(),
             quantity: Joi.number().required()
-        },
+        }),
         ordered_by: Joi.string().min(1).required(),
         status: Joi.string().valid('pending', 'commit', 'canceled', 'fulfilled').required()
     };
