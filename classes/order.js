@@ -8,7 +8,8 @@ const userModel = User.Model;
 const OrderModel = mongoose.model('Order', mongoose.Schema({
     invoice_no: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     po_no: {
         type: String,
@@ -46,29 +47,29 @@ const OrderModel = mongoose.model('Order', mongoose.Schema({
 
 // Class
 class Order {
-    constructor() {
-
-    }
-
-    getOrders(query) {
+    async getOrders(query) {
         // Get orders made by specific user
-        const orders = OrderModel.find(query)
+        const orders = await OrderModel.find(query)
         .populate('order_items.item')
         .sort('order_date');
 
         return orders;
     }
 
-    getOrder(id) {
+    async getOrder(id) {
         if(!mongoose.Types.ObjectId.isValid(id)) return null;
 
-        const order = OrderModel.findById(id);
+        const order = await OrderModel.findById(id);
         
         return order;
     }
 
-    createOrder(invoice_no, po_no, order_items, ordered_by, status) {
-        const order = new OrderModel({
+    async createOrder(invoice_no, po_no, order_items, ordered_by, status) {
+        // Check if order is already existing
+        let order = await ItemModel.findOne({invoice_no: invoice_no});
+        if(order) return null;
+
+        order = new OrderModel({
             invoice_no: invoice_no,
             po_no: po_no,
             order_items: this.consolidate(order_items),
@@ -77,14 +78,14 @@ class Order {
             order_date: Date.now(),
             updated: Date.now()
         });
-        order.save();
+        await order.save();
 
         return order;
     }
 
     // Update order or set order status to 'commit', 'canceled', or 'fulfilled'
-    updateOrder(id, invoice_no, po_no, order_items, ordered_by, status) {
-        const order = OrderModel.findByIdAndUpdate(id, {
+    async updateOrder(id, invoice_no, po_no, order_items, ordered_by, status) {
+        const order = await OrderModel.findByIdAndUpdate(id, {
             invoice_no: invoice_no,
             po_no: po_no,
             order_items: this.consolidate(order_items),
@@ -97,8 +98,8 @@ class Order {
         return order;
     }
 
-    deleteOrder(id) {
-        const order = OrderModel.findByIdAndRemove(id);
+    async deleteOrder(id) {
+        const order = await OrderModel.findByIdAndRemove(id);
         return order;
     }
 

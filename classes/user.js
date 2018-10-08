@@ -56,30 +56,46 @@ const UserModel = mongoose.model('User', mongoose.Schema({
 
 // Class
 class User {
-    constructor() {
-        
+    async getUsers() {
+        const users = await UserModel.find().sort('username');
+
+        return _.map(users, _.partialRight(_.pick, [
+            '_id', 
+            'username', 
+            'firstname', 
+            'lastname', 
+            'address', 
+            'phone', 
+            'email', 
+            'updated'
+        ]));
     }
 
-    getUsers() {
-        const users = UserModel.find().sort('username');
-
-        return users;
-    }
-
-    getUser(id) {
+    async getUser(id) {
         // validate ObjectID
         if(!mongoose.Types.ObjectId.isValid(id)) return null;
 
-        const user = UserModel.findById(id);
+        const user = await UserModel.findById(id);
 
-        return user;
+        // Exclude uneccessary fields
+        return _.pick(user, [
+            '_id', 
+            'username', 
+            'firstname', 
+            'lastname', 
+            'address', 
+            'phone', 
+            'email', 
+            'updated'
+        ]);
     }
 
-    addUser(username, password, firstname, lastname, address, phone, email) {
+    async addUser(username, password, firstname, lastname, address, phone, email) {
         // Check if already registered
-        let user = UserModel.findOne({email: email});
+        let user = await UserModel.findOne({email: email});
         if(user) return null;
 
+        // Create new user
         user = new UserModel({
             username: username,
             password: password,
@@ -92,17 +108,30 @@ class User {
         });
         
         // Hash the password
-        const salt = bcrypt.genSalt(10);
-        user.password = bcrypt.hash(user.password, salt);
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
 
-        user.save();
+        await user.save();
 
-        // Exclude password field
-        return _.pick(user, ['_id', 'username', 'firstname', 'lastname', 'address', 'phone', 'email', 'updated']);
+        // Exclude uneccessary fields
+        return _.pick(user, [
+            '_id', 
+            'username', 
+            'firstname', 
+            'lastname', 
+            'address', 
+            'phone', 
+            'email', 
+            'updated'
+        ]);
     }
 
-    updateUser(id, username, password, firstname, lastname, address, phone, email) {
-        const user = UserModel.findByIdAndUpdate(id, {
+    async updateUser(id, username, password, firstname, lastname, address, phone, email) {
+        // Hash the password
+        const salt = await bcrypt.genSalt(10);
+        password = await bcrypt.hash(password, salt);
+        
+        const user = await UserModel.findByIdAndUpdate(id, {
             username: username,
             password: password,
             firstname: firstname,
@@ -111,16 +140,36 @@ class User {
             phone: phone,
             email: email,
             updated: Date.now()
-        }, 
+        },
         {new: true});
 
-        return user;
+        // Exclude uneccessary fields
+        return _.pick(user, [
+            '_id', 
+            'username', 
+            'firstname', 
+            'lastname', 
+            'address', 
+            'phone', 
+            'email', 
+            'updated'
+        ]);
     }
 
-    deleteUser(id) {
-        const user = UserModel.findByIdAndRemove(id);
+    async deleteUser(id) {
+        const user = await UserModel.findByIdAndRemove(id);
 
-        return user;
+        // Exclude uneccessary fields
+        return _.pick(user, [
+            '_id', 
+            'username', 
+            'firstname', 
+            'lastname', 
+            'address', 
+            'phone', 
+            'email', 
+            'updated'
+        ]);
     }
 }
 

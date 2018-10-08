@@ -7,7 +7,8 @@ const ItemModel = mongoose.model('Item', mongoose.Schema({
         type: String,
         required: true,
         minlenght: 1,
-        maxlenght: 16
+        maxlenght: 16,
+        unique: true
     },
     description: {
         type: String,
@@ -43,27 +44,27 @@ const ItemModel = mongoose.model('Item', mongoose.Schema({
 
 // Class
 class Item {
-    constructor() {
-        
-    }
-
-    getItems() {
-        const items = ItemModel.find().sort('itemcode');
+    async getItems() {
+        const items = await ItemModel.find().sort('itemcode');
 
         return items;
     }
 
-    getItem(id) {
+    async getItem(id) {
         // validate ObjectID
         if(!mongoose.Types.ObjectId.isValid(id)) return null;
 
-        const item = ItemModel.findById(id);
+        const item = await ItemModel.findById(id);
 
         return item;
     }
 
-    addItem(itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
-        const item = new ItemModel({
+    async addItem(itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
+        // Check if item is already existing
+        let item = await ItemModel.findOne({itemcode: itemcode});
+        if(item) return null;
+
+        item = new ItemModel({
             itemcode: itemcode,
             description: description,
             uom: uom,
@@ -72,13 +73,14 @@ class Item {
             unit_cost: unit_cost,
             updated: Date.now()
         });
-        item.save();
+        
+        await item.save();
 
         return item;
     }
 
-    updateItem(id, itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
-        const item = ItemModel.findByIdAndUpdate(id, {
+    async updateItem(id, itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
+        const item = await ItemModel.findByIdAndUpdate(id, {
             itemcode: itemcode,
             description: description,
             uom: uom,
@@ -92,8 +94,8 @@ class Item {
         return item;
     }
 
-    deleteItem(id) {
-        const item = ItemModel.findByIdAndRemove(id);
+    async deleteItem(id) {
+        const item = await ItemModel.findByIdAndRemove(id);
         
         return item;
     }

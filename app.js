@@ -16,6 +16,7 @@ const express = require('express');					// Express
 const users = require('./routes/users');			// Users router
 const items = require('./routes/items');			// Items router
 const orders = require('./routes/orders');			// Orders router
+const auth = require('./routes/auth');				// Authentication router
 
 // Express
 const app = express();
@@ -61,6 +62,7 @@ app.use(helmet());							// Secure the app by setting various HTTP headers
 app.use('/api/users', users);				// Route requests to users
 app.use('/api/inventory/items', items);		// Route requests to items
 app.use('/api/inventory/orders', orders);	// Route requests to orders
+app.use('/api/auth', auth);					// Route requests to auth
 
 // Listen for API requests
 const port = process.env.API_PORT || 3000;

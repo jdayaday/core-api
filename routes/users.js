@@ -38,20 +38,25 @@ router.put('/:id', async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userObject.updateUser(
-        req.params.id, 
-        req.body.username,
-        req.body.password,
-        req.body.firstname,
-        req.body.lastname,
-        req.body.address,
-        req.body.phone,
-        req.body.email
-    );
+    try {
+        const user = await userObject.updateUser(
+            req.params.id, 
+            req.body.username,
+            req.body.password,
+            req.body.firstname,
+            req.body.lastname,
+            req.body.address,
+            req.body.phone,
+            req.body.email
+        );
+    
+        if (!user) return res.status(404).send('The user with the given ID was not found.');
+      
+        res.send(user);
+    } catch(error) {
+        return res.status(400).send(error.message);
+    }
 
-    if (!user) return res.status(404).send('The user with the given ID was not found.');
-  
-    res.send(user);
 });
 
 // Delete user

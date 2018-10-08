@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 // Add new item
 router.post('/', async (req, res) => {
-    const { error } = validateItem(req.body); 
+    const { error } = validateItem(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     const item = await itemObject.addItem(
@@ -27,27 +27,33 @@ router.post('/', async (req, res) => {
         req.body.unit_cost
     );
     
+    if(!item) return res.status(400).send('Item already exists.');
+
     res.send(item);
 });
 
 // Edit item
 router.put('/:id', async (req, res) => {
-    const { error } = validateItem(req.body); 
+    const { error } = validateItem(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const item = await itemObject.updateItem(
-        req.params.id,
-        req.body.itemcode,
-        req.body.description,
-        req.body.uom,
-        req.body.order_uom,
-        req.body.uom_conversion,
-        req.body.unit_cost
-    );
-
-    if (!item) return res.status(404).send('The item with the given ID was not found.');
-  
-    res.send(item);
+    try {
+        const item = await itemObject.updateItem(
+            req.params.id,
+            req.body.itemcode,
+            req.body.description,
+            req.body.uom,
+            req.body.order_uom,
+            req.body.uom_conversion,
+            req.body.unit_cost
+        );
+    
+        if (!item) return res.status(404).send('The item with the given ID was not found.');
+      
+        res.send(item);
+    } catch(error) {
+        return res.status(400).send(error.message);
+    }
 });
 
 // Delete item

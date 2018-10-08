@@ -25,6 +25,8 @@ router.post('/', async (req, res) => {
         req.body.ordered_by,
         req.body.status
     );
+
+    if(!order) return res.status(400).send('Order already exists.');
     
     res.send(order);
 });
@@ -34,18 +36,23 @@ router.put('/:id', async (req, res) => {
     const { error } = validateOrder(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const order = await orderObject.updateOrder(
-        req.params.id, 
-        req.body.invoice_no,
-        req.body.po_no,
-        req.body.order_items,
-        req.body.ordered_by,
-        req.body.status
-    );
+    try {
+        const order = await orderObject.updateOrder(
+            req.params.id, 
+            req.body.invoice_no,
+            req.body.po_no,
+            req.body.order_items,
+            req.body.ordered_by,
+            req.body.status
+        );
+    
+        if (!order) return res.status(404).send('The order with the given ID was not found.');
+      
+        res.send(order);
+    } catch(error) {
+        return res.status(400).send(error.message);
+    }
 
-    if (!order) return res.status(404).send('The order with the given ID was not found.');
-  
-    res.send(order);
 });
 
 // Delete order
