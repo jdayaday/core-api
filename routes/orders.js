@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Classes
 const Order = require('../classes/order');
-const orderObject = new Order.Class();
+const orderObject = new Order();
 
 // Return all user orders
 router.get('/', async (req, res) => {
@@ -72,7 +72,7 @@ function validateOrder(order) {
         invoice_no: Joi.string().min(1).required(),
         po_no: Joi.string().min(1).required(),
         order_items: Joi.array().items({
-            item: Joi.string().required(),
+            item: Joi.objectId().required(),
             quantity: Joi.number().required()
         }),
         ordered_by: Joi.string().min(1).required(),

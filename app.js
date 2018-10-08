@@ -1,4 +1,7 @@
 // Required Modules
+const Joi = require('joi');							// Input validatation
+Joi.objectId = require('joi-objectid')(Joi);		// ObjectID validation for Joi
+
 const mongoose = require('mongoose');				// MongoDB client
 const debug_log = require('debug')('app:debug'); 	// Logging - set DEBUG environment variable
 const info_log = require('debug')('app:info');

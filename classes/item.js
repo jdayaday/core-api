@@ -49,16 +49,21 @@ class Item {
 
     getItems() {
         const items = ItemModel.find().sort('itemcode');
+
         return items;
     }
 
     getItem(id) {
+        // validate ObjectID
+        if(!mongoose.Types.ObjectId.isValid(id)) return null;
+
         const item = ItemModel.findById(id);
+
         return item;
     }
 
     addItem(itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
-        let item = new ItemModel({
+        const item = new ItemModel({
             itemcode: itemcode,
             description: description,
             uom: uom,
@@ -67,7 +72,8 @@ class Item {
             unit_cost: unit_cost,
             updated: Date.now()
         });
-        item = item.save();
+        item.save();
+
         return item;
     }
 
@@ -82,16 +88,15 @@ class Item {
             updated: Date.now()
         },
         {new: true});
+
         return item;
     }
 
     deleteItem(id) {
         const item = ItemModel.findByIdAndRemove(id);
+        
         return item;
     }
 }
 
-module.exports = {
-    Class: Item,
-    Model: ItemModel
-}
+module.exports = Item;

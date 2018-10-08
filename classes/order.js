@@ -60,12 +60,15 @@ class Order {
     }
 
     getOrder(id) {
+        if(!mongoose.Types.ObjectId.isValid(id)) return null;
+
         const order = OrderModel.findById(id);
+        
         return order;
     }
 
     createOrder(invoice_no, po_no, order_items, ordered_by, status) {
-        let order = new OrderModel({
+        const order = new OrderModel({
             invoice_no: invoice_no,
             po_no: po_no,
             order_items: this.consolidate(order_items),
@@ -74,7 +77,7 @@ class Order {
             order_date: Date.now(),
             updated: Date.now()
         });
-        order = order.save();
+        order.save();
 
         return order;
     }
@@ -126,7 +129,4 @@ class Order {
     }
 }
 
-module.exports = {
-    Class: Order,
-    Model: OrderModel
-}
+module.exports = Order;

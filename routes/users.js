@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Classes
 const User = require('../classes/user');
-const userObject = new User.Class();
+const userObject = new User();
 
 // Return all users
 router.get('/', async (req, res) => {
@@ -64,7 +64,7 @@ router.delete('/:id', async (req, res) => {
 // Return specified user
 router.get('/:id', async (req, res) => {
     const user = await userObject.getUser(req.params.id);
-
+    
     if (!user) return res.status(404).send('The user with the given ID was not found.');
 
     res.send(user);

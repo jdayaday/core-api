@@ -59,16 +59,21 @@ class User {
 
     getUsers() {
         const users = UserModel.find().sort('username');
+
         return users;
     }
 
     getUser(id) {
+        // validate ObjectID
+        if(!mongoose.Types.ObjectId.isValid(id)) return null;
+
         const user = UserModel.findById(id);
+
         return user;
     }
 
     addUser(username, password, firstname, lastname, address, phone, email) {
-        let user = new UserModel({
+        const user = new UserModel({
             username: username,
             password: password,
             firstname: firstname,
@@ -78,7 +83,8 @@ class User {
             email: email,
             updated: Date.now()
         });
-        user = user.save();
+        user.save();
+
         return user;
     }
 
@@ -94,16 +100,15 @@ class User {
             updated: Date.now()
         }, 
         {new: true});
+
         return user;
     }
 
     deleteUser(id) {
         const user = UserModel.findByIdAndRemove(id);
+
         return user;
     }
 }
 
-module.exports = {
-    Class: User,
-    Model: UserModel
-};
+module.exports = User;

@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Classes
 const Item = require('../classes/item');
-const itemObject = new Item.Class();
+const itemObject = new Item();
 
 // Return all items
 router.get('/', async (req, res) => {
