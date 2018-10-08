@@ -27,6 +27,8 @@ router.post('/', async (req, res) => {
         req.body.phone,
         req.body.email
     );
+
+    if(!user) return res.status(400).send('User already registered.');
     
     res.send(user);
 });
@@ -74,7 +76,7 @@ router.get('/:id', async (req, res) => {
 function validateUser(user) {
     const schema = {
         username: Joi.string().min(1).max(50).required(),
-        password: Joi.string().min(1).max(50).required(),
+        password: Joi.string().min(5).max(255).required(),
         firstname: Joi.string().min(1).max(50).required(),
         lastname: Joi.string().min(1).max(50).required(),
         address: {
@@ -84,7 +86,7 @@ function validateUser(user) {
             zip: Joi.number().required(),
         },
         phone: Joi.string().min(1).max(13).required(),
-        email: Joi.string().min(1).max(100).required()
+        email: Joi.string().min(5).max(255).required().email()
     };
   
     return Joi.validate(user, schema);

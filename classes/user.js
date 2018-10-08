@@ -1,5 +1,7 @@
 // Required modules
 const mongoose = require('mongoose');
+const _ = require('lodash');
+const bcrypt = require('bcrypt');
 
 // Model & Schema
 const UserModel = mongoose.model('User', mongoose.Schema({
@@ -12,8 +14,8 @@ const UserModel = mongoose.model('User', mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlenght: 1,
-        maxlenght: 50
+        minlenght: 5,
+        maxlenght: 1024
     },
     firstname: {
         type: String,
@@ -42,8 +44,9 @@ const UserModel = mongoose.model('User', mongoose.Schema({
     email: {
         type: String,
         required: true,
-        minlenght: 1,
-        maxlenght: 100
+        minlenght: 5,
+        maxlenght: 255,
+        unique: true
     },
     updated: {          // Update date
         type: Date,
@@ -73,7 +76,11 @@ class User {
     }
 
     addUser(username, password, firstname, lastname, address, phone, email) {
-        const user = new UserModel({
+        // Check if already registered
+        let user = UserModel.findOne({email: email});
+        if(user) return null;
+
+        user = new UserModel({
             username: username,
             password: password,
             firstname: firstname,
@@ -83,9 +90,15 @@ class User {
             email: email,
             updated: Date.now()
         });
+        
+        // Hash the password
+        const salt = bcrypt.genSalt(10);
+        user.password = bcrypt.hash(user.password, salt);
+
         user.save();
 
-        return user;
+        // Exclude password field
+        return _.pick(user, ['_id', 'username', 'firstname', 'lastname', 'address', 'phone', 'email', 'updated']);
     }
 
     updateUser(id, username, password, firstname, lastname, address, phone, email) {
