@@ -4,26 +4,26 @@ const Joi = require('joi');             // Input validation
 const router = express.Router();
 
 // Classes
-const Auth = require('../classes/auth');
-const authObject = new Auth();
+const User = require('../classes/user');
+const userObject = new User();
 
 // Authenticate user
 router.post('/', async (req, res) => {
-    const { error } = validateUser(req.body); 
+    const { error } = validateUserCredentials(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const authenticated = await authObject.authenticateUser(
+    const authenticated = await userObject.authenticateUser(
         req.body.email,
         req.body.password
     );
 
-    if(!user) return res.status(400).send('Invalid user or password.');
+    if(!authenticated) return res.status(400).send('Invalid user or password.');
     
-    res.send(user);
+    res.send(authenticated);
 });
 
 // Validate user input
-function validateUser(user) {
+function validateUserCredentials(user) {
     const schema = {
         email: Joi.string().min(5).max(255).required().email(),
         password: Joi.string().min(5).max(255).required()

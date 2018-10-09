@@ -171,6 +171,18 @@ class User {
             'updated'
         ]);
     }
+
+    async authenticateUser(email, password) {
+        // Lookup user's email address
+        let user = await UserModel.findOne({email: email});
+        
+        if(!user) return null;
+
+        // Compare password
+        const validPassword = bcrypt.compare(password, user.password);
+
+        return validPassword;
+    }
 }
 
 module.exports = User;
