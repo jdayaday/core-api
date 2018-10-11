@@ -2,6 +2,7 @@
 const Joi = require('joi');							// Input validatation
 Joi.objectId = require('joi-objectid')(Joi);		// ObjectID validation for Joi
 
+const error = require('./middleware/error');		// Error middleware
 const mongoose = require('mongoose');				// MongoDB client
 const debug_log = require('debug')('app:debug'); 	// Logging - set DEBUG environment variable
 const info_log = require('debug')('app:info');
@@ -69,6 +70,8 @@ app.use('/api/users', users);				// Route requests to users
 app.use('/api/inventory/items', items);		// Route requests to items
 app.use('/api/inventory/orders', orders);	// Route requests to orders
 app.use('/api/auth', auth);					// Route requests to auth
+
+app.use(error);				// Eror handling middleware
 
 // Listen for API requests
 const port = process.env.API_PORT || 3000;

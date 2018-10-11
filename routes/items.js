@@ -1,7 +1,8 @@
 // Required modules
-const auth = require('../middleware/auth'); // Authentication middleware
-const express = require('express');         // Express
-const Joi = require('joi');                 // Input validation
+const auth = require('../middleware/auth');     // Authorization middleware
+const admin = require('../middleware/admin');   // Administrator middleware
+const express = require('express');             // Express
+const Joi = require('joi');                     // Input validation
 const router = express.Router();
 
 // Classes
@@ -9,13 +10,13 @@ const Item = require('../classes/item');
 const itemObject = new Item();
 
 // Return all items
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     const items = await itemObject.getItems();
     res.send(items);
 });
 
 // Add new item
-router.post('/', auth, async (req, res) => {
+router.post('/', [auth, admin], async (req, res) => {
     const { error } = validateItem(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -34,7 +35,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Edit item
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', [auth, admin], async (req, res) => {
     const { error } = validateItem(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -58,7 +59,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // Delete item
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
     const item = await itemObject.deleteItem(req.params.id);
 
     if (!item) return res.status(404).send('The item with the given ID was not found.');

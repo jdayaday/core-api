@@ -50,6 +50,7 @@ const UserModel = mongoose.model('User', mongoose.Schema({
         maxlenght: 255,
         unique: true
     },
+    isAdmin: Boolean,
     updated: {          // Update date
         type: Date,
         default: Date.now
@@ -93,7 +94,7 @@ class User {
         ]);
     }
 
-    async addUser(username, password, firstname, lastname, address, phone, email) {
+    async addUser(username, password, firstname, lastname, address, phone, email, isAdmin) {
         // Check if already registered
         let user = await UserModel.findOne({email: email});
         if(user) return null;
@@ -107,6 +108,7 @@ class User {
             address: address,
             phone: phone,
             email: email,
+            isAdmin: isAdmin,
             updated: Date.now()
         });
         
@@ -129,7 +131,7 @@ class User {
         ]);
     }
 
-    async updateUser(id, username, password, firstname, lastname, address, phone, email) {
+    async updateUser(id, username, password, firstname, lastname, address, phone, email, isAdmin) {
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
@@ -142,6 +144,7 @@ class User {
             address: address,
             phone: phone,
             email: email,
+            isAdmin: isAdmin,
             updated: Date.now()
         },
         {new: true});
@@ -175,8 +178,8 @@ class User {
         ]);
     }
 
-    async generateAuthToken(id) {
-        return jwt.sign({_id: id}, config.get('jwtPrivateKey'));
+    async generateAuthToken(id, isAdmin) {
+        return jwt.sign({_id: id, isAdmin: isAdmin}, config.get('jwtPrivateKey'));
     }
 
     async authenticateUser(email, password) {
@@ -190,7 +193,7 @@ class User {
 
         // Sign
         if(validPassword)
-        return await this.generateAuthToken(user._id);
+        return await this.generateAuthToken(user._id, user.isAdmin);
         
         return null;
     }
