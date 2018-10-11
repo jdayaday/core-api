@@ -1,6 +1,7 @@
 // Required modules
-const express = require('express');     // Express
-const Joi = require('joi');             // Input validation
+const auth = require('../middleware/auth'); // Authentication middleware
+const express = require('express');         // Express
+const Joi = require('joi');                 // Input validation
 const router = express.Router();
 
 // Classes
@@ -8,7 +9,7 @@ const User = require('../classes/user');
 const userObject = new User();
 
 // Return all users
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     const users = await userObject.getUsers();
     res.send(users);
 });
@@ -30,11 +31,12 @@ router.post('/', async (req, res) => {
 
     if(!user) return res.status(400).send('User already registered.');
     
-    res.header('x-auth-token', user.authToken).send(user);
+    // Return with JSON web token
+    res.header('x-auth-token', await userObject.generateAuthToken(user._id)).send(user);
 });
 
 // Edit user
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -60,7 +62,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete user
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const user = await userObject.deleteUser(req.params.id);
 
     if (!user) return res.status(404).send('The user with the given ID was not found.');
@@ -69,7 +71,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Return specified user
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     const user = await userObject.getUser(req.params.id);
     
     if (!user) return res.status(404).send('The user with the given ID was not found.');

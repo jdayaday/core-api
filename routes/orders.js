@@ -1,6 +1,7 @@
 // Required modules
-const express = require('express');     // Express
-const Joi = require('joi');             // Input validation
+const auth = require('../middleware/auth'); // Authentication middleware
+const express = require('express');         // Express
+const Joi = require('joi');                 // Input validation
 const router = express.Router();
 
 // Classes
@@ -8,13 +9,13 @@ const Order = require('../classes/order');
 const orderObject = new Order();
 
 // Return all user orders
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     const orders = await orderObject.getOrders(req.query);
     res.send(orders);
 });
 
 // Create new order
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validateOrder(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -32,7 +33,7 @@ router.post('/', async (req, res) => {
 });
 
 // Edit order
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { error } = validateOrder(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -56,7 +57,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete order
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const order = await orderObject.deleteOrder(req.params.id);
 
     if (!order) return res.status(404).send('The order with the given ID was not found.');
@@ -65,7 +66,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Return specified order
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     const order = await orderObject.getOrder(req.params.id);
 
     if (!order) return res.status(404).send('The order with the given ID was not found.');
