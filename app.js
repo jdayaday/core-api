@@ -25,6 +25,12 @@ const app = express();
 info_log.log = console.log.bind(console);	// log via console
 debug_log.log = console.info.bind(console);	// log to info
 
+// Check if JWT private key is set
+if(!config.get('jwtPrivateKey')) {
+	error_log('FATAL ERROR: jwtPrivateKey is not defined.');
+	process.exit(1);
+}
+
 // Check for application environment and enable necessary express middleware
 info_log(`App Environment: ${app.get('env')}`);
 if (app.get('env') === 'development') {

@@ -1,4 +1,6 @@
 // Required modules
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
@@ -56,6 +58,7 @@ const UserModel = mongoose.model('User', mongoose.Schema({
 
 // Class
 class User {
+
     async getUsers() {
         const users = await UserModel.find().sort('username');
 
@@ -172,6 +175,10 @@ class User {
         ]);
     }
 
+    async generateAuthToken(id) {
+        return jwt.sign({_id: id}, config.get('jwtPrivateKey'));
+    }
+
     async authenticateUser(email, password) {
         // Lookup user's email address
         let user = await UserModel.findOne({email: email});
@@ -181,7 +188,11 @@ class User {
         // Compare password
         const validPassword = bcrypt.compare(password, user.password);
 
-        return validPassword;
+        // Sign
+        if(validPassword)
+        return await this.generateAuthToken(user._id);
+        
+        return null;
     }
 }
 

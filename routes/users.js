@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 
     if(!user) return res.status(400).send('User already registered.');
     
-    res.send(user);
+    res.header('x-auth-token', user.authToken).send(user);
 });
 
 // Edit user
