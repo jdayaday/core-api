@@ -1,8 +1,11 @@
 // Required Modules
+require('express-async-errors');					// Async error handler
+const winston = require('winston');					// Log handler
+const error = require('./middleware/error');		// Error middleware
+
 const Joi = require('joi');							// Input validatation
 Joi.objectId = require('joi-objectid')(Joi);		// ObjectID validation for Joi
 
-const error = require('./middleware/error');		// Error middleware
 const mongoose = require('mongoose');				// MongoDB client
 const debug_log = require('debug')('app:debug'); 	// Logging - set DEBUG environment variable
 const info_log = require('debug')('app:info');
@@ -21,6 +24,9 @@ const auth = require('./routes/auth');				// Authentication router
 
 // Express
 const app = express();
+
+// Set logging to file
+winston.add(new winston.transports.File({filename: 'logfile.log'}));
 
 // Log bindings - error binds to stderror by default
 info_log.log = console.log.bind(console);	// log via console
@@ -71,7 +77,7 @@ app.use('/api/inventory/items', items);		// Route requests to items
 app.use('/api/inventory/orders', orders);	// Route requests to orders
 app.use('/api/auth', auth);					// Route requests to auth
 
-app.use(error);				// Eror handling middleware
+app.use(error);
 
 // Listen for API requests
 const port = process.env.API_PORT || 3000;

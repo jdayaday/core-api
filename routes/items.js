@@ -1,8 +1,8 @@
 // Required modules
-const auth = require('../middleware/auth');     // Authorization middleware
-const admin = require('../middleware/admin');   // Administrator middleware
-const express = require('express');             // Express
-const Joi = require('joi');                     // Input validation
+const auth = require('../middleware/auth');             // Authorization middleware
+const admin = require('../middleware/admin');           // Administrator middleware
+const express = require('express');                     // Express
+const Joi = require('joi');                             // Input validation
 const router = express.Router();
 
 // Classes
