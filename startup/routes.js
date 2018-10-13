@@ -4,12 +4,14 @@ const winston = require('winston');                 // Logging module
 const helmet = require('helmet');					// Protect App with HTTP Headers
 const error = require('../middleware/error');		// Error middleware
 const morgan = require('morgan');					// HTTP logging
+const cors = require('cors');                       // CORS handler
 
 // Routes
 const users = require('../routes/users');			// Users router
 const items = require('../routes/items');			// Items router
 const orders = require('../routes/orders');			// Orders router
 const auth = require('../routes/auth');				// Authentication router
+
 
 module.exports = function(app) {
     // Check for application environment and enable necessary express middleware
@@ -23,8 +25,13 @@ module.exports = function(app) {
     }
 
     // Set Express middleware functions
+    const corsOptions = {
+        origin: '*'
+    }
+
     app.use(express.json());					// Parse incoming JSON payloads
     app.use(helmet());							// Secure the app by setting various HTTP headers
+    app.use(cors(corsOptions));                 // Allow CORS
     app.use('/api/users', users);				// Route requests to users
     app.use('/api/inventory/items', items);		// Route requests to items
     app.use('/api/inventory/orders', orders);	// Route requests to orders

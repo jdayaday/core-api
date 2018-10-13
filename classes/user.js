@@ -189,7 +189,7 @@ class User {
         if(!user) return null;
 
         // Compare password
-        const validPassword = bcrypt.compare(password, user.password);
+        const validPassword = await bcrypt.compare(password, user.password);
 
         // Sign
         if(validPassword)
