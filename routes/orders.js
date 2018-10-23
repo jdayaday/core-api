@@ -9,8 +9,18 @@ const Order = require('../classes/order');
 const orderObject = new Order();
 
 // Return all user orders
-router.get('/', auth, async (req, res) => {
-    const orders = await orderObject.getOrders(req.query);
+router.get('/', auth, async (req, res) => {    
+    let orders = {};
+
+    if(req.user.isAdmin) {
+        // Admin will have access to all orders
+        orders = await orderObject.getOrders(req.query);
+    } else {
+        // Query only orders made by the user
+        req.query.ordered_by = req.user._id;
+        orders = await orderObject.getOrders(req.query);
+    }
+
     res.send(orders);
 });
 
@@ -23,7 +33,7 @@ router.post('/', auth, async (req, res) => {
         req.body.invoice_no,
         req.body.po_no,
         req.body.order_items,
-        req.body.ordered_by,
+        req.user._id,           // Current user _id will be used
         req.body.status
     );
 
@@ -34,8 +44,13 @@ router.post('/', auth, async (req, res) => {
 
 // Edit order
 router.put('/:id', auth, async (req, res) => {
-    const { error } = validateOrder(req.body); 
+    const { error } = validateOrder(req.body);
     if (error) return res.status(400).send(error.details[0].message);
+
+    // Check if user has access to edit the order
+    if(!validateUserAccess(req)) {
+        return res.status(401).send('Access Denied. Not allowed to edit order.');
+    }
 
     try {
         const order = await orderObject.updateOrder(
@@ -58,6 +73,11 @@ router.put('/:id', auth, async (req, res) => {
 
 // Delete order
 router.delete('/:id', auth, async (req, res) => {
+    // Check if user has access to delete the order
+    if(!validateUserAccess(req)) {
+        return res.status(401).send('Access Denied. Not allowed to delete order.');
+    }
+
     const order = await orderObject.deleteOrder(req.params.id);
 
     if (!order) return res.status(404).send('The order with the given ID was not found.');
@@ -67,6 +87,11 @@ router.delete('/:id', auth, async (req, res) => {
 
 // Return specified order
 router.get('/:id', auth, async (req, res) => {
+    // Check if user has access to the order
+    if(!validateUserAccess(req)) {
+        return res.status(401).send('Access Denied. Not allowed to view the order.');
+    }
+
     const order = await orderObject.getOrder(req.params.id);
 
     if (!order) return res.status(404).send('The order with the given ID was not found.');
@@ -88,6 +113,19 @@ function validateOrder(order) {
     };
   
     return Joi.validate(order, schema);
+}
+
+// Validate if user has access to data/resource
+async function validateUserAccess(req, res) {
+    // Check if user has access to edit the order
+    if(!req.user.isAdmin) {
+        const order = await orderObject.getOrder(req.params.id);
+        if(order.ordered_by != req.user._id) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // Export router
