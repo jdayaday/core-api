@@ -1,9 +1,6 @@
 // Required modules
 const mongoose = require('mongoose');
 
-const User = require('./user');
-const userModel = User.Model;
-
 // Model & Schema
 const OrderModel = mongoose.model('Order', mongoose.Schema({
     invoice_no: {
@@ -48,7 +45,7 @@ const OrderModel = mongoose.model('Order', mongoose.Schema({
 // Class
 class Order {
     async getOrders(query) {
-        // Get orders made by specific user
+        // Get orders
         const orders = await OrderModel.find(query)
         .populate('order_items.item')
         .sort('order_date');
