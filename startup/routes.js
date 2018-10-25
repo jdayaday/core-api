@@ -10,6 +10,8 @@ const cors = require('cors');                       // CORS handler
 const users = require('../routes/users');			// Users router
 const items = require('../routes/items');			// Items router
 const orders = require('../routes/orders');			// Orders router
+const vendors = require('../routes/vendors');       // Vendors router
+const locations = require('../routes/locations');   // Locations router
 const auth = require('../routes/auth');				// Authentication router
 
 
@@ -29,13 +31,15 @@ module.exports = function(app) {
         origin: '*'
     }
 
-    app.use(express.json());					// Parse incoming JSON payloads
-    app.use(helmet());							// Secure the app by setting various HTTP headers
-    app.use(cors(corsOptions));                 // Allow CORS
-    app.use('/api/users', users);				// Route requests to users
-    app.use('/api/inventory/items', items);		// Route requests to items
-    app.use('/api/inventory/orders', orders);	// Route requests to orders
-    app.use('/api/auth', auth);					// Route requests to auth
+    app.use(express.json());					    // Parse incoming JSON payloads
+    app.use(helmet());							    // Secure the app by setting various HTTP headers
+    app.use(cors(corsOptions));                     // Allow CORS
+    app.use('/api/users', users);				    // Route requests to users
+    app.use('/api/inventory/items', items);		    // Route requests to items
+    app.use('/api/inventory/orders', orders);	    // Route requests to orders
+    app.use('/api/inventory/vendors', vendors);     // Route requests to vendors
+    app.use('/api/inventory/locations', locations); // Route requests to locations
+    app.use('/api/auth', auth);					    // Route requests to auth
 
     app.use(error);
 }
