@@ -1,4 +1,5 @@
 {
 	"name": "Core Services API",
-	"jwtPrivateKey": ""
+	"jwtPrivateKey": "",
+	"tokenExpiry": "1h"
 }

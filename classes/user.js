@@ -152,7 +152,7 @@ class User {
     }
 
     async generateAuthToken(id, isAdmin) {
-        return jwt.sign({_id: id, isAdmin: isAdmin}, config.get('jwtPrivateKey'));
+        return jwt.sign({_id: id, isAdmin: isAdmin}, config.get('jwtPrivateKey'), {expiresIn: config.get('tokenExpiry')});
     }
 
     async authenticateUser(email, password) {

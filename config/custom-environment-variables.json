@@ -3,5 +3,6 @@
 		"username": "db_user",
 		"password": "db_password"
 	},
-	"jwtPrivateKey": "jwtPrivateKey"
+	"jwtPrivateKey": "jwtPrivateKey",
+	"tokenExpiry": "jwtExpiry"
 }
