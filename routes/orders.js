@@ -9,7 +9,7 @@ const Order = require('../classes/order');
 const orderObject = new Order();
 
 // Return all user orders
-router.get('/', auth, async (req, res) => {    
+router.get('/', auth, async (req, res) => {
     let orders = {};
 
     if(req.user.isAdmin) {
@@ -55,7 +55,7 @@ router.put('/:id', auth, async (req, res) => {
 
     try {
         const order = await orderObject.updateOrder(
-            req.params.id, 
+            req.params.id,
             req.body.invoice_no,
             req.body.po_no,
             req.body.order_items,
@@ -113,7 +113,7 @@ function validateOrder(order) {
         ordered_by: Joi.string().min(1).required(),
         status: Joi.string().valid('pending', 'commit', 'canceled', 'fulfilled').required()
     };
-  
+
     return Joi.validate(order, schema);
 }
 
