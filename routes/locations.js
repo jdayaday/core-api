@@ -24,7 +24,8 @@ router.post('/', [auth, admin], async (req, res) => {
         req.body.location_code,
         req.body.description,
         req.body.area,
-        req.body.shelf_bin
+        req.body.shelf_bin,
+        req.user._id
     );
     
     if(!location) return res.status(400).send('Location already exists.');
@@ -43,7 +44,8 @@ router.put('/:id', [auth, admin], async (req, res) => {
             req.body.location_code,
             req.body.description,
             req.body.area,
-            req.body.shelf_bin
+            req.body.shelf_bin,
+            req.user._id
         );
     
         if (!location) return res.status(404).send('The location with the given ID was not found.');

@@ -36,6 +36,10 @@ const OrderModel = mongoose.model('Order', mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     updated: {          // Update date
         type: Date,
         default: Date.now
@@ -61,7 +65,7 @@ class Order {
         return order;
     }
 
-    async createOrder(invoice_no, po_no, order_items, ordered_by, status) {
+    async createOrder(invoice_no, po_no, order_items, ordered_by, status, updated_by) {
         // Check if order is already existing
         let order = await ItemModel.findOne({invoice_no: invoice_no});
         if(order) return null;
@@ -73,6 +77,7 @@ class Order {
             ordered_by: ordered_by,
             status: status,
             order_date: Date.now(),
+            updated_by: updated_by,
             updated: Date.now()
         });
         await order.save();
@@ -81,13 +86,14 @@ class Order {
     }
 
     // Update order or set order status to 'commit', 'canceled', or 'fulfilled'
-    async updateOrder(id, invoice_no, po_no, order_items, ordered_by, status) {
+    async updateOrder(id, invoice_no, po_no, order_items, ordered_by, status, updated_by) {
         const order = await OrderModel.findByIdAndUpdate(id, {
             invoice_no: invoice_no,
             po_no: po_no,
             order_items: this.consolidate(order_items),
             ordered_by: ordered_by,
             status: status,
+            updated_by: updated_by,
             updated: Date.now()
         },
         {new: true});

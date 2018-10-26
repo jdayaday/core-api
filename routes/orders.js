@@ -34,7 +34,8 @@ router.post('/', auth, async (req, res) => {
         req.body.po_no,
         req.body.order_items,
         req.user._id,           // Current user _id will be used
-        req.body.status
+        req.body.status,
+        req.user, _id
     );
 
     if(!order) return res.status(400).send('Order already exists.');
@@ -59,7 +60,8 @@ router.put('/:id', auth, async (req, res) => {
             req.body.po_no,
             req.body.order_items,
             req.body.ordered_by,
-            req.body.status
+            req.body.status,
+            req.user._id
         );
     
         if (!order) return res.status(404).send('The order with the given ID was not found.');

@@ -28,7 +28,8 @@ router.post('/', [auth, admin], async (req, res) => {
         req.body.phone,
         req.body.fax,
         req.body.address,
-        req.body.vendor_items
+        req.body.vendor_items,
+        req.user._id
     );
     
     if(!vendor) return res.status(400).send('Vendor already exists.');
@@ -51,7 +52,8 @@ router.put('/:id', [auth, admin], async (req, res) => {
             req.body.phone,
             req.body.fax,
             req.body.address,
-            req.body.vendor_items
+            req.body.vendor_items,
+            req.user._id
         );
     
         if (!vendor) return res.status(404).send('The vendor with the given ID was not found.');

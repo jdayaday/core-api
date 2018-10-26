@@ -61,6 +61,10 @@ const VendorModel = mongoose.model('Vendor', mongoose.Schema({
             required: true
         }
     }],
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     updated: {          // Update date
         type: Date,
         default: Date.now
@@ -84,7 +88,7 @@ class Vendor {
         return vendor;
     }
 
-    async addVendor(vendor_code, vendor_name, contact_name, email, phone, fax, address, vendor_items) {
+    async addVendor(vendor_code, vendor_name, contact_name, email, phone, fax, address, vendor_items, updated_by) {
         // Check if item is already existing
         let vendor = await VendorModel.findOne({vendor_code: vendor_code});
         if(vendor) return null;
@@ -98,6 +102,7 @@ class Vendor {
             fax: fax,
             address: address,
             vendor_items, vendor_items,
+            updated_by: updated_by,
             updated: Date.now()
         });
 
@@ -106,7 +111,7 @@ class Vendor {
         return vendor;
     }
 
-    async updateVendor(id, vendor_code, vendor_name, contact_name, email, phone, fax, address, vendor_items) {
+    async updateVendor(id, vendor_code, vendor_name, contact_name, email, phone, fax, address, vendor_items, updated_by) {
         const vendor = await VendorModel.findByIdAndUpdate(id, {
             vendor_code: vendor_code,
             vendor_name: vendor_name,
@@ -116,6 +121,7 @@ class Vendor {
             fax: fax,
             address: address,
             vendor_items, vendor_items,
+            updated_by:updated_by,
             updated: Date.now()
         },
         {new: true});

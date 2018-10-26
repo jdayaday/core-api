@@ -36,6 +36,10 @@ const ItemModel = mongoose.model('Item', mongoose.Schema({
         type: Number,
         required: true
     },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     updated: {          // Update date
         type: Date,
         default: Date.now
@@ -59,7 +63,7 @@ class Item {
         return item;
     }
 
-    async addItem(itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
+    async addItem(itemcode, description, uom, order_uom, uom_conversion, unit_cost, updated_by) {
         // Check if item is already existing
         let item = await ItemModel.findOne({itemcode: itemcode});
         if(item) return null;
@@ -71,6 +75,7 @@ class Item {
             order_uom: order_uom,
             uom_conversion: uom_conversion,
             unit_cost: unit_cost,
+            updated_by: updated_by,
             updated: Date.now()
         });
         
@@ -79,7 +84,7 @@ class Item {
         return item;
     }
 
-    async updateItem(id, itemcode, description, uom, order_uom, uom_conversion, unit_cost) {
+    async updateItem(id, itemcode, description, uom, order_uom, uom_conversion, unit_cost, updated_by) {
         const item = await ItemModel.findByIdAndUpdate(id, {
             itemcode: itemcode,
             description: description,
@@ -87,6 +92,7 @@ class Item {
             order_uom: order_uom,
             uom_conversion: uom_conversion,
             unit_cost: unit_cost,
+            updated_by: updated_by,
             updated: Date.now()
         },
         {new: true});

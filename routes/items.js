@@ -26,7 +26,8 @@ router.post('/', [auth, admin], async (req, res) => {
         req.body.uom,
         req.body.order_uom,
         req.body.uom_conversion,
-        req.body.unit_cost
+        req.body.unit_cost,
+        req.user._id
     );
     
     if(!item) return res.status(400).send('Item already exists.');
@@ -47,7 +48,8 @@ router.put('/:id', [auth, admin], async (req, res) => {
             req.body.uom,
             req.body.order_uom,
             req.body.uom_conversion,
-            req.body.unit_cost
+            req.body.unit_cost,
+            req.user._id
         );
     
         if (!item) return res.status(404).send('The item with the given ID was not found.');

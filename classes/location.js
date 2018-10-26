@@ -27,6 +27,10 @@ const LocationModel = mongoose.model('Location', mongoose.Schema({
         minlenght: 1,
         maxlenght: 50
     },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     updated: {          // Update date
         type: Date,
         default: Date.now
@@ -50,7 +54,7 @@ class Location {
         return location;
     }
 
-    async addLocation(location_code, description, area, shelf_bin) {
+    async addLocation(location_code, description, area, shelf_bin, updated_by) {
         // Check if item is already existing
         let location = await LocationModel.findOne({location_code: location_code});
         if(location) return null;
@@ -60,6 +64,7 @@ class Location {
             description: description,
             area: area,
             shelf_bin: shelf_bin,
+            updated_by: updated_by,
             updated: Date.now()
         });
 
@@ -68,12 +73,13 @@ class Location {
         return location;
     }
 
-    async updateLocation(id, location_code, description, area, shelf_bin) {
+    async updateLocation(id, location_code, description, area, shelf_bin, updated_by) {
         const location = await LocationModel.findByIdAndUpdate(id, {
             location_code: location_code,
             description: description,
             area: area,
             shelf_bin: shelf_bin,
+            updated_by: updated_by,
             updated: Date.now()
         },
         {new: true});

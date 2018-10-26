@@ -5,6 +5,18 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
+const pick_fields = [
+    '_id', 
+    'username', 
+    'firstname', 
+    'lastname', 
+    'address', 
+    'phone', 
+    'email',
+    'updated_by',
+    'updated'
+];
+
 // Model & Schema
 const UserModel = mongoose.model('User', mongoose.Schema({
     username: {
@@ -51,6 +63,10 @@ const UserModel = mongoose.model('User', mongoose.Schema({
         unique: true
     },
     isAdmin: Boolean,
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     updated: {          // Update date
         type: Date,
         default: Date.now
@@ -63,16 +79,7 @@ class User {
     async getUsers() {
         const users = await UserModel.find().sort('username');
 
-        return _.map(users, _.partialRight(_.pick, [
-            '_id', 
-            'username', 
-            'firstname', 
-            'lastname', 
-            'address', 
-            'phone', 
-            'email', 
-            'updated'
-        ]));
+        return _.map(users, _.partialRight(_.pick, pick_fields));
     }
 
     async getUser(id) {
@@ -82,19 +89,10 @@ class User {
         const user = await UserModel.findById(id);
 
         // Exclude uneccessary fields
-        return _.pick(user, [
-            '_id', 
-            'username', 
-            'firstname', 
-            'lastname', 
-            'address', 
-            'phone', 
-            'email', 
-            'updated'
-        ]);
+        return _.pick(user, pick_fields);
     }
 
-    async addUser(username, password, firstname, lastname, address, phone, email, isAdmin) {
+    async addUser(username, password, firstname, lastname, address, phone, email, isAdmin, updated_by) {
         // Check if already registered
         let user = await UserModel.findOne({email: email});
         if(user) return null;
@@ -109,6 +107,7 @@ class User {
             phone: phone,
             email: email,
             isAdmin: isAdmin,
+            updated_by: updated_by,
             updated: Date.now()
         });
         
@@ -119,19 +118,10 @@ class User {
         await user.save();
 
         // Exclude uneccessary fields
-        return _.pick(user, [
-            '_id', 
-            'username', 
-            'firstname', 
-            'lastname', 
-            'address', 
-            'phone', 
-            'email', 
-            'updated'
-        ]);
+        return _.pick(user, pick_fields);
     }
 
-    async updateUser(id, username, password, firstname, lastname, address, phone, email, isAdmin) {
+    async updateUser(id, username, password, firstname, lastname, address, phone, email, isAdmin, updated_by) {
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
@@ -145,37 +135,20 @@ class User {
             phone: phone,
             email: email,
             isAdmin: isAdmin,
+            updated_by: updated_by,
             updated: Date.now()
         },
         {new: true});
 
         // Exclude uneccessary fields
-        return _.pick(user, [
-            '_id', 
-            'username', 
-            'firstname', 
-            'lastname', 
-            'address', 
-            'phone', 
-            'email', 
-            'updated'
-        ]);
+        return _.pick(user, pick_fields);
     }
 
     async deleteUser(id) {
         const user = await UserModel.findByIdAndRemove(id);
 
         // Exclude uneccessary fields
-        return _.pick(user, [
-            '_id', 
-            'username', 
-            'firstname', 
-            'lastname', 
-            'address', 
-            'phone', 
-            'email', 
-            'updated'
-        ]);
+        return _.pick(user, pick_fields);
     }
 
     async generateAuthToken(id, isAdmin) {

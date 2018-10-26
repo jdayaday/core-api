@@ -28,7 +28,8 @@ router.post('/', [auth, admin], async (req, res) => {
         req.body.address,
         req.body.phone,
         req.body.email,
-        req.body.isAdmin
+        req.body.isAdmin,
+        req.user._id
     );
 
     if(!user) return res.status(400).send('User already registered.');
@@ -52,7 +53,8 @@ router.put('/:id', [auth, admin], async (req, res) => {
             req.body.address,
             req.body.phone,
             req.body.email,
-            req.body.isAdmin
+            req.body.isAdmin,
+            req.user._id
         );
     
         if (!user) return res.status(404).send('The user with the given ID was not found.');
