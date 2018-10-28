@@ -34,6 +34,7 @@ module.exports = function(app) {
     app.use(express.json());					    // Parse incoming JSON payloads
     app.use(helmet());							    // Secure the app by setting various HTTP headers
     app.use(cors(corsOptions));                     // Allow CORS
+    app.use(express.static('public'));              // Static files
     app.use('/api/users', users);				    // Route requests to users
     app.use('/api/inventory/items', items);		    // Route requests to items
     app.use('/api/inventory/orders', orders);	    // Route requests to orders
