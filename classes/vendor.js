@@ -136,4 +136,5 @@ class Vendor {
     }
 }
 
-module.exports = Vendor;
+module.exports.class = Vendor;
+module.exports.model = VendorModel;

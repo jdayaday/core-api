@@ -1,12 +1,13 @@
 // Required modules
-const auth = require('../middleware/auth');             // Authorization middleware
-const admin = require('../middleware/admin');           // Administrator middleware
-const express = require('express');                     // Express
-const Joi = require('joi');                             // Input validation
+const validateObjectId = require('../middleware/validateObjectId'); // Validate Object ID middleware
+const auth = require('../middleware/auth');                         // Authorization middleware
+const admin = require('../middleware/admin');                       // Administrator middleware
+const express = require('express');                                 // Express
+const Joi = require('joi');                                         // Input validation
 const router = express.Router();
 
 // Classes
-const User = require('../classes/user');
+const User = require('../classes/user').class;
 const userObject = new User();
 
 // Return all users
@@ -39,7 +40,7 @@ router.post('/', [auth, admin], async (req, res) => {
 });
 
 // Edit user
-router.put('/:id', [auth, admin], async (req, res) => {
+router.put('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const { error } = validateUser(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -67,7 +68,7 @@ router.put('/:id', [auth, admin], async (req, res) => {
 });
 
 // Delete user
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const user = await userObject.deleteUser(req.params.id);
 
     if (!user) return res.status(404).send('The user with the given ID was not found.');

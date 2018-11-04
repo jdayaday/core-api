@@ -133,4 +133,5 @@ class Order {
     }
 }
 
-module.exports = Order;
+module.exports.class = Order;
+module.exports.model = OrderModel;

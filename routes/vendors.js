@@ -1,12 +1,13 @@
 // Required modules
-const auth = require('../middleware/auth');             // Authorization middleware
-const admin = require('../middleware/admin');           // Administrator middleware
-const express = require('express');                     // Express
-const Joi = require('joi');                             // Input validation
+const validateObjectId = require('../middleware/validateObjectId'); // Validate Object ID middleware
+const auth = require('../middleware/auth');                         // Authorization middleware
+const admin = require('../middleware/admin');                       // Administrator middleware
+const express = require('express');                                 // Express
+const Joi = require('joi');                                         // Input validation
 const router = express.Router();
 
 // Classes
-const Vendor = require('../classes/vendor');
+const Vendor = require('../classes/vendor').class;
 const vendorObject = new Vendor();
 
 // Return all vendors
@@ -38,7 +39,7 @@ router.post('/', [auth, admin], async (req, res) => {
 });
 
 // Edit vendor
-router.put('/:id', [auth, admin], async (req, res) => {
+router.put('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const { error } = validateVendor(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -65,7 +66,7 @@ router.put('/:id', [auth, admin], async (req, res) => {
 });
 
 // Delete vendor
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const vendor = await vendorObject.deleteVendor(req.params.id);
 
     if (!vendor) return res.status(404).send('The vendor with the given ID was not found.');
@@ -74,7 +75,7 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 });
 
 // Return specified vendor
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', [auth, validateObjectId], async (req, res) => {
     const vendor = await vendorObject.getVendor(req.params.id);
 
     if (!vendor) return res.status(404).send('The vendor with the given ID was not found.');

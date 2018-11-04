@@ -4,7 +4,7 @@
   "description": "Core APIs",
   "main": "app.js",
   "scripts": {
-    "test": "jest --forceExit --detectOpenHandles"
+    "test": "jest --forceExit --detectOpenHandles --verbose"
   },
   "keywords": [
     "API"
@@ -29,6 +29,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "supertest": "^3.3.0"
   }
 }

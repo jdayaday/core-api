@@ -1,12 +1,13 @@
 // Required modules
-const auth = require('../middleware/auth');             // Authorization middleware
-const admin = require('../middleware/admin');           // Administrator middleware
-const express = require('express');                     // Express
-const Joi = require('joi');                             // Input validation
+const validateObjectId = require('../middleware/validateObjectId'); // Validate Object ID middlewareconst auth = require('../middleware/auth');             // Authorization middleware
+const auth = require('../middleware/auth');                         // Authorization middleware
+const admin = require('../middleware/admin');                       // Administrator middleware
+const express = require('express');                                 // Express
+const Joi = require('joi');                                         // Input validation
 const router = express.Router();
 
 // Classes
-const Location = require('../classes/location');
+const Location = require('../classes/location').class;
 const locationObject = new Location();
 
 // Return all locations
@@ -34,7 +35,7 @@ router.post('/', [auth, admin], async (req, res) => {
 });
 
 // Edit location
-router.put('/:id', [auth, admin], async (req, res) => {
+router.put('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const { error } = validateLocation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -57,7 +58,7 @@ router.put('/:id', [auth, admin], async (req, res) => {
 });
 
 // Delete location
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const location = await locationObject.deleteLocation(req.params.id);
 
     if (!location) return res.status(404).send('The location with the given ID was not found.');
@@ -66,7 +67,7 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 });
 
 // Return specified location
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', [auth, validateObjectId], async (req, res) => {
     const location = await locationObject.getLocation(req.params.id);
 
     if (!location) return res.status(404).send('The locaiton with the given ID was not found.');

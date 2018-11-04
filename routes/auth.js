@@ -4,7 +4,7 @@ const Joi = require('joi');             // Input validation
 const router = express.Router();
 
 // Classes
-const User = require('../classes/user');
+const User = require('../classes/user').class;
 const userObject = new User();
 
 // Authenticate user

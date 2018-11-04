@@ -67,4 +67,5 @@ class ItemLedger {
 
 }
 
-module.exports = ItemLedger;
+module.exports.class = ItemLedger;
+module.exports.model = ItemLedgerModel;

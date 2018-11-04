@@ -10,8 +10,15 @@ module.exports = function() {
     const db_name = config.get('servers.database');
     const db_user = config.get('servers.username');
     const db_password = config.get('servers.password');
-    const uri =  `mongodb+srv://${db_user}:${db_password}@${db_server}/${db_name}`;
 
+    // Construct URI based on the environment config
+    let uri;
+    if(db_server === 'localhost') {
+        uri =  `mongodb://${db_server}/${db_name}`;
+    } else {
+        uri =  `mongodb+srv://${db_user}:${db_password}@${db_server}/${db_name}`;
+    }
+    
     winston.info(`Application Name: ${app_name}`);
     winston.info(`Database Server: ${db_server}`);
     winston.info(`Database Name: ${db_name}`);
@@ -19,6 +26,7 @@ module.exports = function() {
     winston.info(`Database Password: ${db_password}`);
 
     // Connect to MongoDB
+    console.log(`MongoDB connection string: ${uri}`);
     winston.info(`MongoDB connection string: ${uri}`);
 
     mongoose.connect(uri, { useNewUrlParser: true })

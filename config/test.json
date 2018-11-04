@@ -1,7 +1,7 @@
 {
 	"name": "Core Services API - Production",
 	"servers": {
-		"host": "cluster-triomm3-yoafa.mongodb.net",
-		"database": "triomm3"
+		"host": "localhost",
+		"database": "triomm3_tests"
 	}
 }

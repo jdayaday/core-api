@@ -94,4 +94,5 @@ class Location {
     }
 }
 
-module.exports = Location;
+module.exports.class = Location;
+module.exports.model = LocationModel;

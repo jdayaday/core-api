@@ -6,12 +6,12 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
 const pick_fields = [
-    '_id', 
-    'username', 
-    'firstname', 
-    'lastname', 
-    'address', 
-    'phone', 
+    '_id',
+    'username',
+    'firstname',
+    'lastname',
+    'address',
+    'phone',
     'email',
     'updated_by',
     'updated'
@@ -75,6 +75,13 @@ const UserModel = mongoose.model('User', mongoose.Schema({
 
 // Class
 class User {
+    constructor() {
+        // Lookup admin user
+        UserModel.findOne({username: 'admin'}).then( async (user) => {
+            // Create admin user if not existing
+            if(!user) await this.createAdminUser();
+        });
+    }
 
     async getUsers() {
         const users = await UserModel.find().sort('username');
@@ -170,6 +177,31 @@ class User {
         
         return null;
     }
+
+    async createAdminUser() {
+        // Check if admin user is already existing
+        let user = await UserModel.findOne({email: 'admin@triomm3.ph'});
+
+        if(!user) return null;
+
+        const username = 'admin';
+        const password = 'password';
+        const firstname = 'Super';
+        const lastname = 'User';
+        const address = {
+            street: 'Apple Street',
+            city: 'Makati',
+            province: 'Metro Manila',
+            zip: '1234'
+        };
+        const phone = '1234567';
+        const email = 'admin@triomm3.ph';
+        const isAdmin = true;
+        const updated_by = null;
+
+        return this.addUser(username, password, firstname, lastname, address, phone, email, isAdmin, updated_by);
+    }
 }
 
-module.exports = User;
+module.exports.class = User;
+module.exports.model = UserModel;

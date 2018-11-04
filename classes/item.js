@@ -107,4 +107,5 @@ class Item {
     }
 }
 
-module.exports = Item;
+module.exports.class = Item;
+module.exports.model = ItemModel;

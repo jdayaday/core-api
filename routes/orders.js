@@ -1,11 +1,12 @@
 // Required modules
-const auth = require('../middleware/auth');             // Authorization middleware
-const express = require('express');                     // Express
-const Joi = require('joi');                             // Input validation
+const validateObjectId = require('../middleware/validateObjectId'); // Validate Object ID middleware
+const auth = require('../middleware/auth');                         // Authorization middleware
+const express = require('express');                                 // Express
+const Joi = require('joi');                                         // Input validation
 const router = express.Router();
 
 // Classes
-const Order = require('../classes/order');
+const Order = require('../classes/order').class;
 const orderObject = new Order();
 
 // Return all user orders
@@ -44,7 +45,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Edit order
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', [auth, validateObjectId], async (req, res) => {
     const { error } = validateOrder(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -74,7 +75,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // Delete order
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', [auth, validateObjectId], async (req, res) => {
     // Check if user has access to delete the order
     if(!validateUserAccess(req)) {
         return res.status(401).send('Access Denied. Not allowed to delete order.');
@@ -88,7 +89,7 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 // Return specified order
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', [auth, validateObjectId], async (req, res) => {
     // Check if user has access to the order
     if(!validateUserAccess(req)) {
         return res.status(401).send('Access Denied. Not allowed to view the order.');
